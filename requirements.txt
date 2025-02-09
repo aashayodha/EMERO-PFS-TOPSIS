@@ -4,3 +4,4 @@ scikit-fuzzy
 pandas
 matplotlib
 scipy
+networkx
