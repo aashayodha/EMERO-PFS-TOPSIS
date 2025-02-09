@@ -15,11 +15,11 @@ st.set_page_config(page_title="Estratificação de Riscos para Pacientes em Pron
 # =============================================
 
 # Carregar logos e bandeiras
-logo_uff = Image.open("projeto-priorizacao/logo.png/logouff_vertical_fundo_azul-1.png")  # Substitua pelo caminho da imagem da UFF
-logo_ps = Image.open("projeto-priorizacao/logo.png/prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
-bandeira_br = Image.open("bandeira_br.png")  # Substitua pelo caminho da bandeira do Brasil
-bandeira_uk = Image.open("bandeira_uk.png")  # Substitua pelo caminho da bandeira do Reino Unido
-bandeira_it = Image.open("bandeira_it.png")  # Substitua pelo caminho da bandeira da Itália
+logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  
+logo_ps = Image.open("prevent-senior.png") 
+bandeira_br = Image.open("bandeira_br.png")  
+bandeira_uk = Image.open("bandeira_uk.png") 
+bandeira_it = Image.open("bandeira_it.png") 
 
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
