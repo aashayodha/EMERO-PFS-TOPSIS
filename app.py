@@ -5,13 +5,77 @@ import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
 import streamlit as st
+from PIL import Image
 
 # Configuração da página Streamlit
-st.set_page_config(page_title="Priorização de Pacientes", layout="wide")
-st.title("Priorização de Pacientes - TOPSIS + Lógica Fuzzy")
+st.set_page_config(page_title="Estratificação de Riscos para Pacientes em Pronto Atendimento", layout="wide")
 
 # =============================================
-# Seção 1: Definição das Variáveis do Problema
+# Seção 1: Cabeçalho com Logos e Bandeiras
+# =============================================
+
+# Carregar logos e bandeiras
+logo_uff = Image.open("projeto-priorizacao/logo.png/logouff_vertical_fundo_azul-1 (1).png")  # Substitua pelo caminho da imagem da UFF
+logo_ps = Image.open("projeto-priorizacao/logo.png/prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
+bandeira_br = Image.open("bandeira_br.png")  # Substitua pelo caminho da bandeira do Brasil
+bandeira_uk = Image.open("bandeira_uk.png")  # Substitua pelo caminho da bandeira do Reino Unido
+bandeira_it = Image.open("bandeira_it.png")  # Substitua pelo caminho da bandeira da Itália
+
+# Layout do cabeçalho
+col1, col2, col3 = st.columns([2, 3, 2])
+with col1:
+    st.image([logo_uff, logo_ps], width=100)
+with col2:
+    st.title("Estratificação de Riscos para Pacientes em Pronto Atendimento")
+with col3:
+    st.write("Selecione o idioma:")
+    if st.button("🇧🇷"):
+        st.session_state.idioma = "pt"
+    if st.button("🇬🇧"):
+        st.session_state.idioma = "en"
+    if st.button("🇮🇹"):
+        st.session_state.idioma = "it"
+
+# Definir idioma padrão
+if "idioma" not in st.session_state:
+    st.session_state.idioma = "pt"
+
+# Textos traduzidos
+textos = {
+    "pt": {
+        "titulo": "Estratificação de Riscos para Pacientes em Pronto Atendimento",
+        "adicionar_paciente": "Adicionar Paciente",
+        "resultados": "Resultados da Priorização",
+        "grafico": "Gráfico de Dispersão",
+        "dataframe_pfn": "DataFrame PFN",
+        "dataframe_distancias": "DataFrame Distâncias",
+        "dataframe_final": "DataFrame Final",
+        "analise_resultados": "Análise dos Resultados",
+    },
+    "en": {
+        "titulo": "Risk Stratification for Emergency Patients",
+        "adicionar_paciente": "Add Patient",
+        "resultados": "Prioritization Results",
+        "grafico": "Scatter Plot",
+        "dataframe_pfn": "PFN DataFrame",
+        "dataframe_distancias": "Distances DataFrame",
+        "dataframe_final": "Final DataFrame",
+        "analise_resultados": "Results Analysis",
+    },
+    "it": {
+        "titulo": "Stratificazione del Rischio per Pazienti in Pronto Soccorso",
+        "adicionar_paciente": "Aggiungi Paziente",
+        "resultados": "Risultati della Priorizzazione",
+        "grafico": "Grafico a Dispersione",
+        "dataframe_pfn": "DataFrame PFN",
+        "dataframe_distancias": "DataFrame Distanze",
+        "dataframe_final": "DataFrame Finale",
+        "analise_resultados": "Analisi dei Risultati",
+    }
+}
+
+# =============================================
+# Seção 2: Definição das Variáveis do Problema
 # =============================================
 
 # Criando as variáveis do problema
@@ -25,7 +89,7 @@ TC = ctrl.Antecedent(np.arange(32, 44, 1), 'Temperatura Corporal')
 EG = ctrl.Consequent(np.arange(1, 6, 1), 'Estado Geral')
 
 # =============================================
-# Seção 2: Definição das Funções de Pertinência
+# Seção 3: Definição das Funções de Pertinência
 # =============================================
 
 # Neuroatividade
@@ -78,7 +142,7 @@ TC['Alta'] = fuzz.gaussmf(TC.universe, 39, 1)
 TC['Muito Alta'] = fuzz.gaussmf(TC.universe, 41, 1)
 
 # =============================================
-# Seção 3: Função para Cálculo do PFN
+# Seção 4: Função para Cálculo do PFN
 # =============================================
 
 def calcular_pfn_automatico(valor, variavel_fuzzy):
@@ -97,12 +161,15 @@ def calcular_pfn_automatico(valor, variavel_fuzzy):
     return round(positivo, 4), round(negativo, 4), round(neutro, 4)
 
 # =============================================
-# Seção 4: Interface Streamlit
+# Seção 5: Interface Streamlit
 # =============================================
 
+# Armazenamento dos pacientes na sessão do Streamlit
+if 'pacientes' not in st.session_state:
+    st.session_state.pacientes = []
+
 # Entrada de dados dos pacientes
-st.sidebar.header("Entrada de Sinais Vitais")
-pacientes = []
+st.sidebar.header(textos[st.session_state.idioma]["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
@@ -113,21 +180,30 @@ with st.sidebar.form("paciente_form"):
     pas = st.slider("Pressão Arterial Sistólica (0-250)", 0, 250, 120)
     pad = st.slider("Pressão Arterial Diastólica (0-130)", 0, 130, 80)
     temp = st.slider("Temperatura Corporal (32-43)", 32, 43, 37)
-    submitted = st.form_submit_button("Adicionar Paciente")
+    submitted = st.form_submit_button(textos[st.session_state.idioma]["adicionar_paciente"])
     if submitted:
-        paciente = [neuro, fr, sat, fc, pas, pad, temp]
-        pacientes.append(paciente)
+        paciente = {
+            "Neuroatividade": neuro,
+            "Frequência Respiratória": fr,
+            "Saturação de Oxigênio": sat,
+            "Frequência Cardíaca": fc,
+            "Pressão Arterial Sistólica": pas,
+            "Pressão Arterial Diastólica": pad,
+            "Temperatura Corporal": temp
+        }
+        st.session_state.pacientes.append(paciente)
         st.success("Paciente adicionado!")
 
 # =============================================
-# Seção 5: Processamento e Exibição de Resultados
+# Seção 6: Processamento e Exibição de Resultados
 # =============================================
 
-if pacientes:
+if st.session_state.pacientes:
     # Cálculo dos PFNs
     matrizes_pacientes = []
-    for idx, paciente in enumerate(pacientes):
-        MPF = np.array([calcular_pfn_automatico(valor, variavel) for valor, variavel in zip(paciente, [SNC, FR, SatO2, FC, PAS, PAD, TC])])
+    for idx, paciente in enumerate(st.session_state.pacientes):
+        valores = list(paciente.values())
+        MPF = np.array([calcular_pfn_automatico(valor, variavel) for valor, variavel in zip(valores, [SNC, FR, SatO2, FC, PAS, PAD, TC])])
         matrizes_pacientes.append(MPF)
 
     # Aplicação do TOPSIS
@@ -154,20 +230,124 @@ if pacientes:
     df_pacientes["Csi"] = df_pacientes["D-"] / (df_pacientes["D+"] + df_pacientes["D-"])
     df_pacientes["Ranking"] = df_pacientes["Csi"].rank(ascending=True, method="dense")
 
-    # Exibição dos resultados
-    st.subheader("Resultados da Priorização")
-    st.dataframe(df_pacientes[["ID", "Csi", "Ranking"]].sort_values(by="Ranking"))
+    # Análise dos resultados
+    df_pacientes["Categoria_Positive"] = ""
+    df_pacientes["Categoria_Negative"] = ""
+    df_pacientes["Categoria_Neutral"] = ""
 
-    # Gráfico de dispersão
-    fig, ax = plt.subplots(figsize=(10, 6))
-    scatter = ax.scatter(df_pacientes["D+"], df_pacientes["D-"], c=df_pacientes["Csi"], cmap='RdYlGn', s=100, edgecolor='black')
-    for i, txt in enumerate(df_pacientes["ID"]):
-        ax.annotate(txt, (df_pacientes["D+"][i], df_pacientes["D-"][i]), textcoords="offset points", xytext=(10, -10), fontsize=8, ha='center')
-    ax.set_xlabel("Distância até SIP (D+)")
-    ax.set_ylabel("Distância até SIN (D-)")
-    ax.set_title("Estado Geral Relativo dos Pacientes")
-    plt.colorbar(scatter, label="Coeficiente de Proximidade Relativa (ξ)")
-    st.pyplot(fig)
+    for index, row in df_pacientes.iterrows():
+        # Classificação do valor positivo (μ)
+        estado_geral_positivo = row["Positive"]
+        if 0.0 <= estado_geral_positivo < 0.2:
+            categoria_positivo = "muito crítico"
+        elif 0.2 <= estado_geral_positivo < 0.4:
+            categoria_positivo = "crítico"
+        elif 0.4 <= estado_geral_positivo < 0.6:
+            categoria_positivo = "instável"
+        elif 0.6 <= estado_geral_positivo < 0.8:
+            categoria_positivo = "próximo dos limites normais"
+        elif 0.8 <= estado_geral_positivo <= 1:
+            categoria_positivo = "normal"
+        else:
+            categoria_positivo = "fora da escala válida"
+
+        # Classificação do valor negativo (ν)
+        estado_geral_negativo = row["Negative"]
+        if 0.0 <= estado_geral_negativo < 0.2:
+            categoria_negativo = "risco muito baixo"
+        elif 0.2 <= estado_geral_negativo < 0.4:
+            categoria_negativo = "risco baixo"
+        elif 0.4 <= estado_geral_negativo < 0.6:
+            categoria_negativo = "risco moderado"
+        elif 0.6 <= estado_geral_negativo < 0.8:
+            categoria_negativo = "risco alto"
+        elif 0.8 <= estado_geral_negativo <= 1:
+            categoria_negativo = "risco muito alto"
+        else:
+            categoria_negativo = "fora da escala válida"
+
+        # Classificação do valor neutro (η)
+        estado_geral_neutro = row["Neutral"]
+        if 0.0 <= estado_geral_neutro < 0.2:
+            categoria_neutro = "muito pouca incerteza"
+        elif 0.2 <= estado_geral_neutro < 0.4:
+            categoria_neutro = "pouca incerteza"
+        elif 0.4 <= estado_geral_neutro < 0.6:
+            categoria_neutro = "incerteza moderada"
+        elif 0.6 <= estado_geral_neutro < 0.8:
+            categoria_neutro = "considerável incerteza"
+        elif 0.8 <= estado_geral_neutro <= 1:
+            categoria_neutro = "muita incerteza"
+        else:
+            categoria_neutro = "fora da escala válida"
+
+        # Atualizando as categorias no DataFrame
+        df_pacientes.at[index, "Categoria_Positive"] = categoria_positivo
+        df_pacientes.at[index, "Categoria_Negative"] = categoria_negativo
+        df_pacientes.at[index, "Categoria_Neutral"] = categoria_neutro
+
+    # Renomeando as colunas
+    df_pacientes.rename(columns={
+        "Categoria_Positive": "Criticidade",
+        "Categoria_Negative": "Risco",
+        "Categoria_Neutral": "Incerteza"
+    }, inplace=True)
+
+    # Abas para visualização
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        textos[st.session_state.idioma]["grafico"],
+        textos[st.session_state.idioma]["dataframe_pfn"],
+        textos[st.session_state.idioma]["dataframe_distancias"],
+        textos[st.session_state.idioma]["dataframe_final"],
+        textos[st.session_state.idioma]["analise_resultados"]
+    ])
+
+    with tab1:
+        # Gráfico de dispersão
+        fig, ax = plt.subplots(figsize=(10, 6))
+        scatter = ax.scatter(df_pacientes["D+"], df_pacientes["D-"], c=df_pacientes["Csi"], cmap='RdYlGn', s=100, edgecolor='black')
+        for i, txt in enumerate(df_pacientes["ID"]):
+            ax.annotate(txt, (df_pacientes["D+"][i], df_pacientes["D-"][i]), textcoords="offset points", xytext=(10, -10), fontsize=8, ha='center')
+        ax.set_xlabel("Distância até SIP (D+)")
+        ax.set_ylabel("Distância até SIN (D-)")
+        ax.set_title("Estado Geral Relativo dos Pacientes")
+        plt.colorbar(scatter, label="Coeficiente de Proximidade Relativa (ξ)")
+        st.pyplot(fig)
+
+    with tab2:
+        st.subheader(textos[st.session_state.idioma]["dataframe_pfn"])
+        st.dataframe(df_pacientes[["ID", "Positive", "Negative", "Neutral"]])
+
+    with tab3:
+        st.subheader(textos[st.session_state.idioma]["dataframe_distancias"])
+        st.dataframe(df_pacientes[["ID", "D+", "D-"]])
+
+    with tab4:
+        st.subheader(textos[st.session_state.idioma]["dataframe_final"])
+        st.dataframe(df_pacientes[["ID", "Csi", "Ranking", "Criticidade", "Risco", "Incerteza"]])
+
+    with tab5:
+        st.subheader(textos[st.session_state.idioma]["analise_resultados"])
+        for index, row in df_pacientes.iterrows():
+            st.write(f"**Paciente {row['ID']}:**")
+            st.write(f"- Criticidade: {row['Criticidade']}")
+            st.write(f"- Risco: {row['Risco']}")
+            st.write(f"- Incerteza: {row['Incerteza']}")
+            st.write("---")
 
 else:
     st.info("Adicione pacientes para ver os resultados.")
+
+# =============================================
+# Seção 7: Rodapé
+# =============================================
+
+st.markdown("---")
+st.markdown("""
+**Todos os direitos reservados.**  
+O uso não comercial (acadêmico) deste software é gratuito.  
+A única coisa que se pede em troca é citar este software quando os resultados são usados em publicações.  
+Para citar o software: SILVA, Antonio Sergio da; SANTOS, Marcos dos; GOMES, Carlos Francisco Simões;  
+EMERO PSF TOPSIS Software Web (v.1). 2025.  
+
+""")
