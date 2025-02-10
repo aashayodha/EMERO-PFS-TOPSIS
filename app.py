@@ -8,7 +8,7 @@ import streamlit as st
 from PIL import Image
 
 # Configuração da página Streamlit
-st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
+st.set_page_config(page_title="Estratificação de Risco para Pacientes em Pronto Atendimento", layout="wide")
 
 # =============================================
 # Seção 1: Cabeçalho com Logos e Botões de Idioma
@@ -70,21 +70,20 @@ with col2:
 with col3:
     st.write("Select language:")
 
-    # Botões de bandeira personalizados
-    col_pt, col_en, col_it = st.columns(3)
-    with col_pt:
-        if st.button("🇧🇷 Português", key="pt_button", help="Mudar para Português"):
-            st.session_state.idioma = "pt"
-            st.experimental_rerun()
-    with col_en:
-        if st.button("🇬🇧 English", key="en_button", help="Switch to English"):
-            st.session_state.idioma = "en"
-            st.experimental_rerun()
-    with col_it:
-        if st.button("🇮🇹 Italiano", key="it_button", help="Cambia a Italiano"):
-            st.session_state.idioma = "it"
-            st.experimental_rerun()
-
+    # Botões de bandeira personalizados com emojis
+col_pt, col_en, col_it = st.columns(3)
+with col_pt:
+    if st.button("🇧🇷 Português", key="pt_button", help="Mudar para Português"):
+        st.session_state.idioma = "pt"
+        st.rerun()
+with col_en:
+    if st.button("🇬🇧 English", key="en_button", help="Switch to English"):
+        st.session_state.idioma = "en"
+        st.rerun()
+with col_it:
+    if st.button("🇮🇹 Italiano", key="it_button", help="Cambia a Italiano"):
+        st.session_state.idioma = "it"
+        st.rerun()
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
