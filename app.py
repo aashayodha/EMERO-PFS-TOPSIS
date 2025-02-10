@@ -8,37 +8,34 @@ import streamlit as st
 from PIL import Image
 
 # Configuração da página Streamlit
-st.set_page_config(page_title="Estratificação de Riscos para Pacientes em Pronto Atendimento", layout="wide")
+st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
 
 # =============================================
-# Seção 1: Cabeçalho com Logos e Bandeiras
+# Seção 1: Cabeçalho com Logos
 # =============================================
 
-# Carregar logos e bandeiras
-logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  
-logo_ps = Image.open("prevent-senior.png") 
-bandeira_br = Image.open("bandeira_br.png")  
-bandeira_uk = Image.open("bandeira_uk.png") 
-bandeira_it = Image.open("bandeira_it.png") 
+# Carregar logos
+logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Substitua pelo caminho da imagem da UFF
+logo_ps = Image.open("prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
 
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
 with col1:
     st.image([logo_uff, logo_ps], width=100)
 with col2:
-    st.title("Estratificação de Riscos para Pacientes em Pronto Atendimento")
+    st.title("Risk Stratification for Emergency Patients")
 with col3:
-    st.write("Selecione o idioma:")
-    if st.button("🇧🇷"):
-        st.session_state.idioma = "pt"
-    if st.button("🇬🇧"):
+    st.write("Select language:")
+    if st.button("English"):
         st.session_state.idioma = "en"
-    if st.button("🇮🇹"):
+    if st.button("Italiano"):
         st.session_state.idioma = "it"
+    if st.button("Português"):
+        st.session_state.idioma = "pt"
 
 # Definir idioma padrão
 if "idioma" not in st.session_state:
-    st.session_state.idioma = "pt"
+    st.session_state.idioma = "en"
 
 # Textos traduzidos
 textos = {
@@ -173,13 +170,13 @@ st.sidebar.header(textos[st.session_state.idioma]["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
-    neuro = st.slider("Neuroatividade (1-5)", 1.0, 5.0, 3.0)
-    fr = st.slider("Frequência Respiratória (0-50)", 0, 50, 20)
-    sat = st.slider("Saturação de Oxigênio (0-100)", 0, 100, 95)
-    fc = st.slider("Frequência Cardíaca (0-300)", 0, 300, 80)
-    pas = st.slider("Pressão Arterial Sistólica (0-250)", 0, 250, 120)
-    pad = st.slider("Pressão Arterial Diastólica (0-130)", 0, 130, 80)
-    temp = st.slider("Temperatura Corporal (32-43)", 32, 43, 37)
+    neuro = st.number_input("Neuroatividade (1-5)", min_value=1.0, max_value=5.0, value=3.0)
+    fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, value=20)
+    sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, value=95)
+    fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, value=80)
+    pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, value=120)
+    pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, value=80)
+    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=37)
     submitted = st.form_submit_button(textos[st.session_state.idioma]["adicionar_paciente"])
     if submitted:
         paciente = {
