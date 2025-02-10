@@ -70,20 +70,37 @@ with col2:
 with col3:
     st.write("Select language:")
 
-    # Botões de bandeira personalizados com emojis
-col_pt, col_en, col_it = st.columns(3)
-with col_pt:
-    if st.button("🇧🇷 Português", key="pt_button", help="Mudar para Português"):
-        st.session_state.idioma = "pt"
-        st.rerun()
-with col_en:
-    if st.button("🇬🇧 English", key="en_button", help="Switch to English"):
-        st.session_state.idioma = "en"
-        st.rerun()
-with col_it:
-    if st.button("🇮🇹 Italiano", key="it_button", help="Cambia a Italiano"):
-        st.session_state.idioma = "it"
-        st.rerun()
+   # URLs das bandeiras
+url_bandeira_br = "https://flagcdn.com/br.svg"
+url_bandeira_uk = "https://flagcdn.com/gb.svg"
+url_bandeira_it = "https://flagcdn.com/it.svg"
+
+# Layout do cabeçalho
+col1, col2, col3 = st.columns([2, 3, 2])
+with col1:
+    st.write("Logos aqui")  # Substitua pelos logos da UFF e Prevent Senior
+with col2:
+    st.title("Risk Stratification for Emergency Patients")
+with col3:
+    st.write("Select language:")
+
+    # Botões de bandeira personalizados com URLs
+    col_pt, col_en, col_it = st.columns(3)
+    with col_pt:
+        if st.button("Português", key="pt_button", help="Mudar para Português"):
+            st.session_state.idioma = "pt"
+            st.rerun()
+        st.image(url_bandeira_br, width=30)  # Exibe a bandeira do Brasil
+    with col_en:
+        if st.button("English", key="en_button", help="Switch to English"):
+            st.session_state.idioma = "en"
+            st.rerun()
+        st.image(url_bandeira_uk, width=30)  # Exibe a bandeira do Reino Unido
+    with col_it:
+        if st.button("Italiano", key="it_button", help="Cambia a Italiano"):
+            st.session_state.idioma = "it"
+            st.rerun()
+        st.image(url_bandeira_it, width=30)  # Exibe a bandeira da Itália
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
