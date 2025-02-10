@@ -60,6 +60,9 @@ if 'idioma' not in st.session_state:
 # Obtém o conteúdo com base no idioma atual
 content = get_content(st.session_state.idioma)
 
+import streamlit as st
+from PIL import Image
+
 # URLs das bandeiras
 url_bandeira_br = "https://flagcdn.com/br.svg"
 url_bandeira_uk = "https://flagcdn.com/gb.svg"
@@ -74,26 +77,32 @@ with col2:
 with col3:
     st.write("Select language:")
 
-    # Botões de bandeira personalizados com URLs
-    col_pt, col_en, col_it = st.columns(3)
-    with col_pt:
-        if st.button("", key="pt_button", help="Mudar para Português"):
-            st.session_state.idioma = "pt"
-            st.rerun()
-        st.image(url_bandeira_br, width=50, use_container_width=False, output_format="PNG")
-        st.write("Português")
-    with col_en:
-        if st.button("", key="en_button", help="Switch to English"):
-            st.session_state.idioma = "en"
-            st.rerun()
-        st.image(url_bandeira_uk, width=50, use_container_width=False, output_format="PNG")
-        st.write("English")
-    with col_it:
-        if st.button("", key="it_button", help="Cambia a Italiano"):
-            st.session_state.idioma = "it"
-            st.rerun()
-        st.image(url_bandeira_it, width=50, use_container_width=False, output_format="PNG")
-        st.write("Italiano")
+    # Botões de bandeira personalizados com HTML
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: space-between; text-align: center;">
+            <div>
+                <button style="border: none; background: none; cursor: pointer;" onclick="window.streamlitSessionState.set('idioma', 'pt'); window.streamlitSessionState.rerun();">
+                    <img src="https://flagcdn.com/br.svg" width="50" height="30" alt="Português">
+                    <p>Português</p>
+                </button>
+            </div>
+            <div>
+                <button style="border: none; background: none; cursor: pointer;" onclick="window.streamlitSessionState.set('idioma', 'en'); window.streamlitSessionState.rerun();">
+                    <img src="https://flagcdn.com/gb.svg" width="50" height="30" alt="English">
+                    <p>English</p>
+                </button>
+            </div>
+            <div>
+                <button style="border: none; background: none; cursor: pointer;" onclick="window.streamlitSessionState.set('idioma', 'it'); window.streamlitSessionState.rerun();">
+                    <img src="https://flagcdn.com/it.svg" width="50" height="30" alt="Italiano">
+                    <p>Italiano</p>
+                </button>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
