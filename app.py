@@ -80,21 +80,20 @@ with col3:
         if st.button("", key="pt_button", help="Mudar para Português"):
             st.session_state.idioma = "pt"
             st.rerun()
-        st.image(url_bandeira_br, width=50, use_column_width=False, output_format="PNG")
+        st.image(url_bandeira_br, width=50, use_container_width=False, output_format="PNG")
         st.write("Português")
     with col_en:
         if st.button("", key="en_button", help="Switch to English"):
             st.session_state.idioma = "en"
             st.rerun()
-        st.image(url_bandeira_uk, width=50, use_column_width=False, output_format="PNG")
+        st.image(url_bandeira_uk, width=50, use_container_width=False, output_format="PNG")
         st.write("English")
     with col_it:
         if st.button("", key="it_button", help="Cambia a Italiano"):
             st.session_state.idioma = "it"
             st.rerun()
-        st.image(url_bandeira_it, width=50, use_column_width=False, output_format="PNG")
+        st.image(url_bandeira_it, width=50, use_container_width=False, output_format="PNG")
         st.write("Italiano")
-
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
