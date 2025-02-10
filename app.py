@@ -7,9 +7,6 @@ import matplotlib.pyplot as plt
 import streamlit as st
 from PIL import Image
 
-# Configuração da página Streamlit
-st.set_page_config(page_title="Estratificação de Risco para Pacientes em Pronto Atendimento", layout="wide")
-
 # =============================================
 # Seção 1: Cabeçalho com Logos e Botões de Idioma
 # =============================================
@@ -54,6 +51,42 @@ def get_content(language):
             "analise_resultados": "Analisi dei Risultati",
         }
 
+# Função para definir o conteúdo com base no idioma
+def get_content(language):
+    if language == "pt":
+        return {
+            "title": "Estratificação de Riscos para Pacientes em Pronto Atendimento",
+            "adicionar_paciente": "Adicionar Paciente",
+            "resultados": "Resultados da Priorização",
+            "grafico": "Gráfico de Dispersão",
+            "dataframe_pfn": "DataFrame PFN",
+            "dataframe_distancias": "DataFrame Distâncias",
+            "dataframe_final": "DataFrame Final",
+            "analise_resultados": "Análise dos Resultados",
+        }
+    elif language == "en":
+        return {
+            "title": "Risk Stratification for Emergency Patients",
+            "adicionar_paciente": "Add Patient",
+            "resultados": "Prioritization Results",
+            "grafico": "Scatter Plot",
+            "dataframe_pfn": "PFN DataFrame",
+            "dataframe_distancias": "Distances DataFrame",
+            "dataframe_final": "Final DataFrame",
+            "analise_resultados": "Results Analysis",
+        }
+    elif language == "it":
+        return {
+            "title": "Stratificazione del Rischio per Pazienti in Pronto Soccorso",
+            "adicionar_paciente": "Aggiungi Paziente",
+            "resultados": "Risultati della Priorizzazione",
+            "grafico": "Grafico a Dispersione",
+            "dataframe_pfn": "DataFrame PFN",
+            "dataframe_distancias": "DataFrame Distanze",
+            "dataframe_final": "DataFrame Finale",
+            "analise_resultados": "Analisi dei Risultati",
+        }
+
 # Inicializa o estado da sessão para o idioma, se ainda não existir
 if 'idioma' not in st.session_state:
     st.session_state.idioma = "pt"  # Português como idioma padrão
@@ -61,16 +94,7 @@ if 'idioma' not in st.session_state:
 # Obtém o conteúdo com base no idioma atual
 content = get_content(st.session_state.idioma)
 
-# Layout do cabeçalho
-col1, col2, col3 = st.columns([2, 3, 2])
-with col1:
-    st.image([logo_uff, logo_ps], width=100)
-with col2:
-    st.title(content["title"])
-with col3:
-    st.write("Select language:")
-
-   # URLs das bandeiras
+# URLs das bandeiras
 url_bandeira_br = "https://flagcdn.com/br.svg"
 url_bandeira_uk = "https://flagcdn.com/gb.svg"
 url_bandeira_it = "https://flagcdn.com/it.svg"
@@ -78,29 +102,26 @@ url_bandeira_it = "https://flagcdn.com/it.svg"
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
 with col1:
-    st.write("Logos aqui")  # Substitua pelos logos da UFF e Prevent Senior
+    st.image([logo_uff, logo_ps], width=100)  # Substitua pelos logos da UFF e Prevent Senior
 with col2:
-    st.title("Risk Stratification for Emergency Patients")
+    st.title(content["title"])
 with col3:
     st.write("Select language:")
 
     # Botões de bandeira personalizados com URLs
     col_pt, col_en, col_it = st.columns(3)
     with col_pt:
-        if st.button("Português", key="pt_button", help="Mudar para Português"):
+        if st.image(url_bandeira_br, width=50, use_column_width=False, output_format="PNG", caption="Português"):
             st.session_state.idioma = "pt"
             st.rerun()
-        st.image(url_bandeira_br, width=30)  # Exibe a bandeira do Brasil
     with col_en:
-        if st.button("English", key="en_button", help="Switch to English"):
+        if st.image(url_bandeira_uk, width=50, use_column_width=False, output_format="PNG", caption="English"):
             st.session_state.idioma = "en"
             st.rerun()
-        st.image(url_bandeira_uk, width=30)  # Exibe a bandeira do Reino Unido
     with col_it:
-        if st.button("Italiano", key="it_button", help="Cambia a Italiano"):
+        if st.image(url_bandeira_it, width=50, use_column_width=False, output_format="PNG", caption="Italiano"):
             st.session_state.idioma = "it"
             st.rerun()
-        st.image(url_bandeira_it, width=30)  # Exibe a bandeira da Itália
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
