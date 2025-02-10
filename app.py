@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 from PIL import Image
+from datetime import datetime
 
 # Configuração da página Streamlit
 st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
@@ -60,9 +61,6 @@ if 'idioma' not in st.session_state:
 # Obtém o conteúdo com base no idioma atual
 content = get_content(st.session_state.idioma)
 
-import streamlit as st
-from PIL import Image
-
 # URLs das bandeiras
 url_bandeira_br = "https://flagcdn.com/br.svg"
 url_bandeira_uk = "https://flagcdn.com/gb.svg"
@@ -103,6 +101,7 @@ with col3:
         """,
         unsafe_allow_html=True
     )
+
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
@@ -202,13 +201,13 @@ st.sidebar.header(content["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
-    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, value=3)
-    fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, value=20)
-    sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, value=95)
-    fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, value=80)
-    pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, value=120)
-    pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, value=80)
-    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=37)
+    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, value=0)
+    fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, value=0)
+    sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, value=0)
+    fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, value=0)
+    pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, value=0)
+    pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, value=0)
+    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=0)
     submitted = st.form_submit_button(content["adicionar_paciente"])
     if submitted:
         paciente = {
@@ -222,6 +221,14 @@ with st.sidebar.form("paciente_form"):
         }
         st.session_state.pacientes.append(paciente)
         st.success("Paciente adicionado!")
+        # Zerar os valores dos campos após adicionar o paciente
+        st.session_state.neuro = 0
+        st.session_state.fr = 0
+        st.session_state.sat = 0
+        st.session_state.fc = 0
+        st.session_state.pas = 0
+        st.session_state.pad = 0
+        st.session_state.temp = 0
 
 # =============================================
 # Seção 6: Processamento e Exibição de Resultados
@@ -358,10 +365,10 @@ if st.session_state.pacientes:
     with tab5:
         st.subheader(content["analise_resultados"])
         for index, row in df_pacientes.iterrows():
-            st.write(f"**Paciente {row['ID']}:**")
-            st.write(f"- Criticidade: {row['Criticidade']}")
-            st.write(f"- Risco: {row['Risco']}")
-            st.write(f"- Incerteza: {row['Incerteza']}")
+            st.write(f"**Paciente {row['ID']} (Data e Hora: {datetime.now().strftime('%d/%m/%Y %H:%M')}):**")
+            st.write(f"- Criticidade (μ = {row['Positive']:.3f}): {row['Criticidade']}")
+            st.write(f"- Risco (ν = {row['Negative']:.3f}): {row['Risco']}")
+            st.write(f"- Incerteza (η = {row['Neutral']:.3f}): {row['Incerteza']}")
             st.write("---")
 
 else:
@@ -376,7 +383,7 @@ st.markdown("---")
 # Usando HTML e CSS para centralizar o texto no rodapé
 st.markdown(
     """
-    <div style="text-align: center;">
+    <div style="background-color: black; color: white; padding: 10px; text-align: center;">
         <p><strong>Todos os direitos reservados.</strong></p>
         <p>O uso não comercial (acadêmico) deste software é gratuito.</p>
         <p>A única coisa que se pede em troca é citar este software quando os resultados são usados em publicações.</p>
