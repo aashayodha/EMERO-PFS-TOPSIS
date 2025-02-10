@@ -35,20 +35,26 @@ with col2:
 with col3:
     st.write("Select language:")
     
-    # Usando colunas para alinhar os botões horizontalmente
-    col_btn1, col_btn2, col_btn3 = st.columns(3)
-    
-    with col_btn1:
-        if st.button("🇬🇧 English"):
-            st.session_state.idioma = "en"
-    
-    with col_btn2:
-        if st.button("🇮🇹 Italiano"):
-            st.session_state.idioma = "it"
-    
-    with col_btn3:
-        if st.button("🇧🇷 Português"):
-            st.session_state.idioma = "pt"
+    # HTML para botões personalizados com imagens das bandeiras
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: space-between;">
+            <button style="border: none; background: none; cursor: pointer;">
+                <img src="https://flagcdn.com/gb.svg" width="30" height="20" alt="English">
+                English
+            </button>
+            <button style="border: none; background: none; cursor: pointer;">
+                <img src="https://flagcdn.com/it.svg" width="30" height="20" alt="Italiano">
+                Italiano
+            </button>
+            <button style="border: none; background: none; cursor: pointer;">
+                <img src="https://flagcdn.com/br.svg" width="30" height="20" alt="Português">
+                Português
+            </button>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # Definir idioma padrão
 if "idioma" not in st.session_state:
