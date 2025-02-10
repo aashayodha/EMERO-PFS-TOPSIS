@@ -14,9 +14,17 @@ st.set_page_config(page_title="Risk Stratification for Emergency Patients", layo
 # Seção 1: Cabeçalho com Logos
 # =============================================
 
+from PIL import Image
+import streamlit as st
+
 # Carregar logos
 logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Substitua pelo caminho da imagem da UFF
 logo_ps = Image.open("prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
+
+# Carregar bandeiras
+bandeira_br = Image.open("bandeira_br.png")  # Substitua pelo caminho da bandeira do Brasil
+bandeira_uk = Image.open("bandeira_uk.png")  # Substitua pelo caminho da bandeira do Reino Unido
+bandeira_it = Image.open("bandeira_it.png")  # Substitua pelo caminho da bandeira da Itália
 
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
@@ -26,12 +34,21 @@ with col2:
     st.title("Risk Stratification for Emergency Patients")
 with col3:
     st.write("Select language:")
-    if st.button("English"):
-        st.session_state.idioma = "en"
-    if st.button("Italiano"):
-        st.session_state.idioma = "it"
-    if st.button("Português"):
-        st.session_state.idioma = "pt"
+    
+    # Usando colunas para alinhar os botões horizontalmente
+    col_btn1, col_btn2, col_btn3 = st.columns(3)
+    
+    with col_btn1:
+        if st.button("🇬🇧 English"):
+            st.session_state.idioma = "en"
+    
+    with col_btn2:
+        if st.button("🇮🇹 Italiano"):
+            st.session_state.idioma = "it"
+    
+    with col_btn3:
+        if st.button("🇧🇷 Português"):
+            st.session_state.idioma = "pt"
 
 # Definir idioma padrão
 if "idioma" not in st.session_state:
@@ -334,10 +351,6 @@ if st.session_state.pacientes:
 
 else:
     st.info("Adicione pacientes para ver os resultados.")
-
-# =============================================
-# Seção 7: Rodapé
-# =============================================
 
 # =============================================
 # Seção 7: Rodapé
