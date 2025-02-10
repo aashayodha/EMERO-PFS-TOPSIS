@@ -193,7 +193,7 @@ st.sidebar.header(textos[st.session_state.idioma]["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
-    neuro = st.number_input("Neuroatividade (1-5)", min_value=1.0, max_value=5.0, value=3.0)
+    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, value=3)
     fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, value=20)
     sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, value=95)
     fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, value=80)
