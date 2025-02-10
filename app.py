@@ -11,88 +11,79 @@ from PIL import Image
 st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
 
 # =============================================
-# Seção 1: Cabeçalho com Logos
+# Seção 1: Cabeçalho com Logos e Botões de Idioma
 # =============================================
-
-from PIL import Image
-import streamlit as st
 
 # Carregar logos
 logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Substitua pelo caminho da imagem da UFF
 logo_ps = Image.open("prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
 
-# Carregar bandeiras
-bandeira_br = Image.open("bandeira_br.png")  # Substitua pelo caminho da bandeira do Brasil
-bandeira_uk = Image.open("bandeira_uk.png")  # Substitua pelo caminho da bandeira do Reino Unido
-bandeira_it = Image.open("bandeira_it.png")  # Substitua pelo caminho da bandeira da Itália
+# Função para definir o conteúdo com base no idioma
+def get_content(language):
+    if language == "pt":
+        return {
+            "title": "Estratificação de Riscos para Pacientes em Pronto Atendimento",
+            "adicionar_paciente": "Adicionar Paciente",
+            "resultados": "Resultados da Priorização",
+            "grafico": "Gráfico de Dispersão",
+            "dataframe_pfn": "DataFrame PFN",
+            "dataframe_distancias": "DataFrame Distâncias",
+            "dataframe_final": "DataFrame Final",
+            "analise_resultados": "Análise dos Resultados",
+        }
+    elif language == "en":
+        return {
+            "title": "Risk Stratification for Emergency Patients",
+            "adicionar_paciente": "Add Patient",
+            "resultados": "Prioritization Results",
+            "grafico": "Scatter Plot",
+            "dataframe_pfn": "PFN DataFrame",
+            "dataframe_distancias": "Distances DataFrame",
+            "dataframe_final": "Final DataFrame",
+            "analise_resultados": "Results Analysis",
+        }
+    elif language == "it":
+        return {
+            "title": "Stratificazione del Rischio per Pazienti in Pronto Soccorso",
+            "adicionar_paciente": "Aggiungi Paziente",
+            "resultados": "Risultati della Priorizzazione",
+            "grafico": "Grafico a Dispersione",
+            "dataframe_pfn": "DataFrame PFN",
+            "dataframe_distancias": "DataFrame Distanze",
+            "dataframe_final": "DataFrame Finale",
+            "analise_resultados": "Analisi dei Risultati",
+        }
+
+# Inicializa o estado da sessão para o idioma, se ainda não existir
+if 'idioma' not in st.session_state:
+    st.session_state.idioma = "pt"  # Português como idioma padrão
+
+# Obtém o conteúdo com base no idioma atual
+content = get_content(st.session_state.idioma)
 
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
 with col1:
     st.image([logo_uff, logo_ps], width=100)
 with col2:
-    st.title("Risk Stratification for Emergency Patients")
+    st.title(content["title"])
 with col3:
     st.write("Select language:")
-    
-    # HTML para botões personalizados com imagens das bandeiras
-    st.markdown(
-        """
-        <div style="display: flex; justify-content: space-between;">
-            <button style="border: none; background: none; cursor: pointer;">
-                <img src="https://flagcdn.com/gb.svg" width="30" height="20" alt="English">
-                English
-            </button>
-            <button style="border: none; background: none; cursor: pointer;">
-                <img src="https://flagcdn.com/it.svg" width="30" height="20" alt="Italiano">
-                Italiano
-            </button>
-            <button style="border: none; background: none; cursor: pointer;">
-                <img src="https://flagcdn.com/br.svg" width="30" height="20" alt="Português">
-                Português
-            </button>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
-# Definir idioma padrão
-if "idioma" not in st.session_state:
-    st.session_state.idioma = "en"
-
-# Textos traduzidos
-textos = {
-    "pt": {
-        "titulo": "Estratificação de Riscos para Pacientes em Pronto Atendimento",
-        "adicionar_paciente": "Adicionar Paciente",
-        "resultados": "Resultados da Priorização",
-        "grafico": "Gráfico de Dispersão",
-        "dataframe_pfn": "DataFrame PFN",
-        "dataframe_distancias": "DataFrame Distâncias",
-        "dataframe_final": "DataFrame Final",
-        "analise_resultados": "Análise dos Resultados",
-    },
-    "en": {
-        "titulo": "Risk Stratification for Emergency Patients",
-        "adicionar_paciente": "Add Patient",
-        "resultados": "Prioritization Results",
-        "grafico": "Scatter Plot",
-        "dataframe_pfn": "PFN DataFrame",
-        "dataframe_distancias": "Distances DataFrame",
-        "dataframe_final": "Final DataFrame",
-        "analise_resultados": "Results Analysis",
-    },
-    "it": {
-        "titulo": "Stratificazione del Rischio per Pazienti in Pronto Soccorso",
-        "adicionar_paciente": "Aggiungi Paziente",
-        "resultados": "Risultati della Priorizzazione",
-        "grafico": "Grafico a Dispersione",
-        "dataframe_pfn": "DataFrame PFN",
-        "dataframe_distancias": "DataFrame Distanze",
-        "dataframe_final": "DataFrame Finale",
-        "analise_resultados": "Analisi dei Risultati",
-    }
-}
+    # Botões de bandeira personalizados
+    col_pt, col_en, col_it = st.columns(3)
+    with col_pt:
+        if st.button("🇧🇷 Português", key="pt_button", help="Mudar para Português"):
+            st.session_state.idioma = "pt"
+            st.experimental_rerun()
+    with col_en:
+        if st.button("🇬🇧 English", key="en_button", help="Switch to English"):
+            st.session_state.idioma = "en"
+            st.experimental_rerun()
+    with col_it:
+        if st.button("🇮🇹 Italiano", key="it_button", help="Cambia a Italiano"):
+            st.session_state.idioma = "it"
+            st.experimental_rerun()
 
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
@@ -189,7 +180,7 @@ if 'pacientes' not in st.session_state:
     st.session_state.pacientes = []
 
 # Entrada de dados dos pacientes
-st.sidebar.header(textos[st.session_state.idioma]["adicionar_paciente"])
+st.sidebar.header(content["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
@@ -200,7 +191,7 @@ with st.sidebar.form("paciente_form"):
     pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, value=120)
     pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, value=80)
     temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=37)
-    submitted = st.form_submit_button(textos[st.session_state.idioma]["adicionar_paciente"])
+    submitted = st.form_submit_button(content["adicionar_paciente"])
     if submitted:
         paciente = {
             "Neuroatividade": neuro,
@@ -315,11 +306,11 @@ if st.session_state.pacientes:
 
     # Abas para visualização
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        textos[st.session_state.idioma]["grafico"],
-        textos[st.session_state.idioma]["dataframe_pfn"],
-        textos[st.session_state.idioma]["dataframe_distancias"],
-        textos[st.session_state.idioma]["dataframe_final"],
-        textos[st.session_state.idioma]["analise_resultados"]
+        content["grafico"],
+        content["dataframe_pfn"],
+        content["dataframe_distancias"],
+        content["dataframe_final"],
+        content["analise_resultados"]
     ])
 
     with tab1:
@@ -335,19 +326,19 @@ if st.session_state.pacientes:
         st.pyplot(fig)
 
     with tab2:
-        st.subheader(textos[st.session_state.idioma]["dataframe_pfn"])
+        st.subheader(content["dataframe_pfn"])
         st.dataframe(df_pacientes[["ID", "Positive", "Negative", "Neutral"]])
 
     with tab3:
-        st.subheader(textos[st.session_state.idioma]["dataframe_distancias"])
+        st.subheader(content["dataframe_distancias"])
         st.dataframe(df_pacientes[["ID", "D+", "D-"]])
 
     with tab4:
-        st.subheader(textos[st.session_state.idioma]["dataframe_final"])
+        st.subheader(content["dataframe_final"])
         st.dataframe(df_pacientes[["ID", "Csi", "Ranking", "Criticidade", "Risco", "Incerteza"]])
 
     with tab5:
-        st.subheader(textos[st.session_state.idioma]["analise_resultados"])
+        st.subheader(content["analise_resultados"])
         for index, row in df_pacientes.iterrows():
             st.write(f"**Paciente {row['ID']}:**")
             st.write(f"- Criticidade: {row['Criticidade']}")
