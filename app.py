@@ -2,10 +2,12 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import pandas as pd
-from datetime import datetime
 import matplotlib.pyplot as plt
 import streamlit as st
 from PIL import Image
+
+# Configuração da página Streamlit
+st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
 
 # =============================================
 # Seção 1: Cabeçalho com Logos e Botões de Idioma
@@ -14,42 +16,6 @@ from PIL import Image
 # Carregar logos
 logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Substitua pelo caminho da imagem da UFF
 logo_ps = Image.open("prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
-
-# Função para definir o conteúdo com base no idioma
-def get_content(language):
-    if language == "pt":
-        return {
-            "title": "Estratificação de Riscos para Pacientes em Pronto Atendimento",
-            "adicionar_paciente": "Adicionar Paciente",
-            "resultados": "Resultados da Priorização",
-            "grafico": "Gráfico de Dispersão",
-            "dataframe_pfn": "DataFrame PFN",
-            "dataframe_distancias": "DataFrame Distâncias",
-            "dataframe_final": "DataFrame Final",
-            "analise_resultados": "Análise dos Resultados",
-        }
-    elif language == "en":
-        return {
-            "title": "Risk Stratification for Emergency Patients",
-            "adicionar_paciente": "Add Patient",
-            "resultados": "Prioritization Results",
-            "grafico": "Scatter Plot",
-            "dataframe_pfn": "PFN DataFrame",
-            "dataframe_distancias": "Distances DataFrame",
-            "dataframe_final": "Final DataFrame",
-            "analise_resultados": "Results Analysis",
-        }
-    elif language == "it":
-        return {
-            "title": "Stratificazione del Rischio per Pazienti in Pronto Soccorso",
-            "adicionar_paciente": "Aggiungi Paziente",
-            "resultados": "Risultati della Priorizzazione",
-            "grafico": "Grafico a Dispersione",
-            "dataframe_pfn": "DataFrame PFN",
-            "dataframe_distancias": "DataFrame Distanze",
-            "dataframe_final": "DataFrame Finale",
-            "analise_resultados": "Analisi dei Risultati",
-        }
 
 # Função para definir o conteúdo com base no idioma
 def get_content(language):
@@ -111,17 +77,24 @@ with col3:
     # Botões de bandeira personalizados com URLs
     col_pt, col_en, col_it = st.columns(3)
     with col_pt:
-        if st.image(url_bandeira_br, width=50, use_column_width=False, output_format="PNG", caption="Português"):
+        if st.button("", key="pt_button", help="Mudar para Português"):
             st.session_state.idioma = "pt"
             st.rerun()
+        st.image(url_bandeira_br, width=50, use_column_width=False, output_format="PNG")
+        st.write("Português")
     with col_en:
-        if st.image(url_bandeira_uk, width=50, use_column_width=False, output_format="PNG", caption="English"):
+        if st.button("", key="en_button", help="Switch to English"):
             st.session_state.idioma = "en"
             st.rerun()
+        st.image(url_bandeira_uk, width=50, use_column_width=False, output_format="PNG")
+        st.write("English")
     with col_it:
-        if st.image(url_bandeira_it, width=50, use_column_width=False, output_format="PNG", caption="Italiano"):
+        if st.button("", key="it_button", help="Cambia a Italiano"):
             st.session_state.idioma = "it"
             st.rerun()
+        st.image(url_bandeira_it, width=50, use_column_width=False, output_format="PNG")
+        st.write("Italiano")
+
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
 # =============================================
