@@ -339,12 +339,22 @@ else:
 # Seção 7: Rodapé
 # =============================================
 
-st.markdown("---")
-st.markdown("""
-**Todos os direitos reservados.**  
-O uso não comercial (acadêmico) deste software é gratuito.  
-A única coisa que se pede em troca é citar este software quando os resultados são usados em publicações.  
-Para citar o software: SILVA, Antonio Sergio da; SANTOS, Marcos dos; GOMES, Carlos Francisco Simões;  
-EMERO PSF TOPSIS Software Web (v.1). 2025.  
+# =============================================
+# Seção 7: Rodapé
+# =============================================
 
-""")
+st.markdown("---")
+
+# Usando HTML e CSS para centralizar o texto no rodapé
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <p><strong>Todos os direitos reservados.</strong></p>
+        <p>O uso não comercial (acadêmico) deste software é gratuito.</p>
+        <p>A única coisa que se pede em troca é citar este software quando os resultados são usados em publicações.</p>
+        <p>Para citar o software: SILVA, Antonio Sergio da; SANTOS, Marcos dos; GOMES, Carlos Francisco Simões;</p>
+        <p>EMERO PSF TOPSIS Software Web (v.1). 2025.</p>
+    </div>
+    """,
+    unsafe_allow_html=True  # Permite o uso de HTML personalizado
+)
