@@ -1,8 +1,6 @@
 streamlit
-streamlit.components.v1
 numpy
 scikit-fuzzy
-control
 pandas
 matplotlib
 scipy
