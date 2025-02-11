@@ -1,22 +1,15 @@
+import streamlit as st
+import streamlit.components.v1 as components
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import pandas as pd
 import matplotlib.pyplot as plt
-import streamlit as st
 from PIL import Image
 from datetime import datetime
 
 # Configuração da página Streamlit
 st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
-
-# =============================================
-# Seção 1: Cabeçalho com Logos e Botões de Idioma
-# =============================================
-
-# Carregar logos
-logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Substitua pelo caminho da imagem da UFF
-logo_ps = Image.open("prevent-senior.png")  # Substitua pelo caminho da imagem da Prevent Senior
 
 # Função para definir o conteúdo com base no idioma
 def get_content(language):
@@ -54,34 +47,69 @@ def get_content(language):
             "analise_resultados": "Analisi dei Risultati",
         }
 
-# Inicializa o estado da sessão para o idioma, se ainda não existir
-if 'idioma' not in st.session_state:
-    st.session_state.idioma = "pt"  # Português como idioma padrão
-
-# Obtém o conteúdo com base no idioma atual
-content = get_content(st.session_state.idioma)
+# Carregar logos
+logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Caminho correto necessário
+logo_ps = Image.open("prevent-senior.png")  # Caminho correto necessário
 
 # URLs das bandeiras
 url_bandeira_br = "https://flagcdn.com/br.svg"
 url_bandeira_uk = "https://flagcdn.com/gb.svg"
 url_bandeira_it = "https://flagcdn.com/it.svg"
 
+# Botões de bandeira usando HTML e Streamlit
+button_html = f"""
+<style>
+    .button {{
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        background-color: #0068c9;
+    }}
+    .flag-img {{
+        width: 30px;
+        margin-right: 10px;
+    }}
+</style>
+<div>
+    <button onclick="window.location.href='/?idioma=pt';" class="button">
+        <img src="{url_bandeira_br}" class="flag-img">Português
+    </button>
+    <button onclick="window.location.href='/?idioma=en';" class="button">
+        <img src="{url_bandeira_uk}" class="flag-img">English
+    </button>
+    <button onclick="window.location.href='/?idioma=it';" class="button">
+        <img src="{url_bandeira_it}" class="flag-img">Italiano
+    </button>
+</div>
+"""
+
+# Detectar mudança de idioma pela URL
+query_params = st.experimental_get_query_params()
+idioma = query_params.get('idioma', ['en'])[0]
+
+# Atualizar o idioma na sessão se for diferente
+if 'idioma' not in st.session_state or st.session_state.idioma != idioma:
+    st.session_state.idioma = idioma
+    st.experimental_rerun()
+
+content = get_content(st.session_state.idioma)
+
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
 with col1:
-    st.image([logo_uff, logo_ps], width=100)  # Substitua pelos logos da UFF e Prevent Senior
+    st.image([logo_uff, logo_ps], width=100)
 with col2:
     st.title(content["title"])
 with col3:
-    st.write("Select language:")
+    components.html(button_html, height=60)
 
-    # Botões de bandeira usando Streamlit
-    if st.button("Português"):
-        st.session_state.idioma = "pt"
-    if st.button("English"):
-        st.session_state.idioma = "en"
-    if st.button("Italiano"):
-        st.session_state.idioma = "it"
+
 
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
@@ -182,15 +210,27 @@ st.sidebar.header(content["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
-    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, value=1)  # Valor inicial corrigido para 1
-    fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, value=0)
-    sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, value=0)
-    fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, value=0)
-    pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, value=0)
-    pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, value=0)
-    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=32)
     
-    # Botão de envio do formulário
+    # Inicializa as chaves no session_state se não existirem
+    if 'neuro' not in st.session_state:
+        st.session_state.update({
+            'neuro': 1,
+            'fr': 0,
+            'sat': 0,
+            'fc': 0,
+            'pas': 0,
+            'pad': 0,
+            'temp': 32
+        })
+    
+    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, key='neuro')
+    fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, key='fr')
+    sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, key='sat')
+    fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, key='fc')
+    pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, key='pas')
+    pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, key='pad')
+    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, key='temp')
+    
     submitted = st.form_submit_button(content["adicionar_paciente"])
     
     if submitted:
@@ -205,15 +245,15 @@ with st.sidebar.form("paciente_form"):
         }
         st.session_state.pacientes.append(paciente)
         st.success("Paciente adicionado!")
-        # Zerar os valores dos campos após adicionar o paciente
-        st.session_state.neuro = 1  # Valor inicial corrigido para 1
+        
+        # Reseta os valores para os padrões
+        st.session_state.neuro = 1
         st.session_state.fr = 0
         st.session_state.sat = 0
         st.session_state.fc = 0
         st.session_state.pas = 0
         st.session_state.pad = 0
         st.session_state.temp = 32
-
 # =============================================
 # Seção 6: Processamento e Exibição de Resultados
 # =============================================
