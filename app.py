@@ -1,12 +1,10 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
-from datetime import datetime
 
 # Configuração da página Streamlit
 st.set_page_config(page_title="Risk Stratification for Emergency Patients", layout="wide")
@@ -18,97 +16,58 @@ def get_content(language):
             "title": "Estratificação de Riscos para Pacientes em Pronto Atendimento",
             "adicionar_paciente": "Adicionar Paciente",
             "resultados": "Resultados da Priorização",
-            "grafico": "Gráfico de Dispersão",
-            "dataframe_pfn": "DataFrame PFN",
-            "dataframe_distancias": "DataFrame Distâncias",
-            "dataframe_final": "DataFrame Final",
-            "analise_resultados": "Análise dos Resultados",
+            # ... (outras traduções)
         }
     elif language == "en":
         return {
             "title": "Risk Stratification for Emergency Patients",
             "adicionar_paciente": "Add Patient",
             "resultados": "Prioritization Results",
-            "grafico": "Scatter Plot",
-            "dataframe_pfn": "PFN DataFrame",
-            "dataframe_distancias": "Distances DataFrame",
-            "dataframe_final": "Final DataFrame",
-            "analise_resultados": "Results Analysis",
+            # ... (other translations)
         }
     elif language == "it":
         return {
             "title": "Stratificazione del Rischio per Pazienti in Pronto Soccorso",
             "adicionar_paciente": "Aggiungi Paziente",
             "resultados": "Risultati della Priorizzazione",
-            "grafico": "Grafico a Dispersione",
-            "dataframe_pfn": "DataFrame PFN",
-            "dataframe_distancias": "DataFrame Distanze",
-            "dataframe_final": "DataFrame Finale",
-            "analise_resultados": "Analisi dei Risultati",
+            # ... (altre traduzioni)
         }
 
-# Carregar logos
-logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")  # Caminho correto necessário
-logo_ps = Image.open("prevent-senior.png")  # Caminho correto necessário
+# Carregar logos (ajuste os caminhos conforme necessário)
+try:
+    logo_uff = Image.open("logouff_vertical_fundo_azul-1.png")
+    logo_ps = Image.open("prevent-senior.png")
+except FileNotFoundError:
+    st.error("Arquivos de imagem não encontrados! Verifique os caminhos.")
+    st.stop()
 
-# URLs das bandeiras
-url_bandeira_br = "https://flagcdn.com/br.svg"
-url_bandeira_uk = "https://flagcdn.com/gb.svg"
-url_bandeira_it = "https://flagcdn.com/it.svg"
-
-# Botões de bandeira usando HTML e Streamlit
-button_html = f"""
-<style>
-    .button {{
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-        background-color: #0068c9;
-    }}
-    .flag-img {{
-        width: 30px;
-        margin-right: 10px;
-    }}
-</style>
-<div>
-    <button onclick="window.location.href='/?idioma=pt';" class="button">
-        <img src="{url_bandeira_br}" class="flag-img">Português
-    </button>
-    <button onclick="window.location.href='/?idioma=en';" class="button">
-        <img src="{url_bandeira_uk}" class="flag-img">English
-    </button>
-    <button onclick="window.location.href='/?idioma=it';" class="button">
-        <img src="{url_bandeira_it}" class="flag-img">Italiano
-    </button>
-</div>
-"""
-
-# Detectar mudança de idioma pela URL
-query_params = st.query_params()
-idioma = query_params.get('idioma', ['en'])[0]
-
-# Atualizar o idioma na sessão se for diferente
-if 'idioma' not in st.session_state or st.session_state.idioma != idioma:
-    st.session_state.idioma = idioma
-    st.rerun()
-
-
-content = get_content(st.session_state.idioma)
+# Inicializar idioma na sessão
+if 'idioma' not in st.session_state:
+    st.session_state.idioma = 'en'
 
 # Layout do cabeçalho
 col1, col2, col3 = st.columns([2, 3, 2])
 with col1:
-    st.image([logo_uff, logo_ps], width=100)
+    st.image(logo_uff, width=100)
+    st.image(logo_ps, width=100)
+
 with col2:
-    st.title(content["title"])
+    st.title(get_content(st.session_state.idioma)["title"])
+
 with col3:
-    components.html(button_html, height=60)
+    # Botões de idioma com emojis de bandeira
+    cols = st.columns(3)
+    with cols[0]:
+        if st.button("🇧🇷 PT"):
+            st.session_state.idioma = 'pt'
+    with cols[1]:
+        if st.button("🇬🇧 EN"):
+            st.session_state.idioma = 'en'
+    with cols[2]:
+        if st.button("🇮🇹 IT"):
+            st.session_state.idioma = 'it'
+
+content = get_content(st.session_state.idioma)
 
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
