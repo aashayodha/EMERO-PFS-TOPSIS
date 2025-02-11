@@ -90,7 +90,7 @@ button_html = f"""
 """
 
 # Detectar mudança de idioma pela URL
-query_params = st.experimental_get_query_params()
+query_params = st.query_params()
 idioma = query_params.get('idioma', ['en'])[0]
 
 # Atualizar o idioma na sessão se for diferente
@@ -108,8 +108,6 @@ with col2:
     st.title(content["title"])
 with col3:
     components.html(button_html, height=60)
-
-
 
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
