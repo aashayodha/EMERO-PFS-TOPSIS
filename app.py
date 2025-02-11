@@ -98,6 +98,7 @@ if 'idioma' not in st.session_state or st.session_state.idioma != idioma:
     st.session_state.idioma = idioma
     st.rerun()
 
+
 content = get_content(st.session_state.idioma)
 
 # Layout do cabeçalho
