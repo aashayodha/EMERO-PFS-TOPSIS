@@ -96,7 +96,7 @@ idioma = query_params.get('idioma', ['en'])[0]
 # Atualizar o idioma na sessão se for diferente
 if 'idioma' not in st.session_state or st.session_state.idioma != idioma:
     st.session_state.idioma = idioma
-    st.experimental_rerun()
+    st.rerun()
 
 content = get_content(st.session_state.idioma)
 
