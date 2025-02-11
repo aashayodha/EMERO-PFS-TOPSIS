@@ -75,15 +75,15 @@ with col3:
     with cols[0]:
         if st.button("🇧🇷 PT"):
             st.session_state.idioma = 'pt'
-            st.experimental_rerun()
+            st.rerun()
     with cols[1]:
         if st.button("🇬🇧 EN"):
             st.session_state.idioma = 'en'
-            st.experimental_rerun()
+            st.rerun()
     with cols[2]:
         if st.button("🇮🇹 IT"):
             st.session_state.idioma = 'it'
-            st.experimental_rerun()
+            st.rerun()
 
 # Obter o conteúdo de acordo com o idioma atual
 content = get_content(st.session_state.idioma)
