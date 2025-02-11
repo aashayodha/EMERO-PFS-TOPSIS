@@ -75,32 +75,13 @@ with col2:
 with col3:
     st.write("Select language:")
 
-    # Botões de bandeira personalizados com HTML
-    st.markdown(
-        """
-        <div style="display: flex; justify-content: space-between; text-align: center;">
-            <div>
-                <button style="border: none; background: none; cursor: pointer;" onclick="window.streamlitSessionState.set('idioma', 'pt'); window.streamlitSessionState.rerun();">
-                    <img src="https://flagcdn.com/br.svg" width="50" height="30" alt="Português">
-                    <p>Português</p>
-                </button>
-            </div>
-            <div>
-                <button style="border: none; background: none; cursor: pointer;" onclick="window.streamlitSessionState.set('idioma', 'en'); window.streamlitSessionState.rerun();">
-                    <img src="https://flagcdn.com/gb.svg" width="50" height="30" alt="English">
-                    <p>English</p>
-                </button>
-            </div>
-            <div>
-                <button style="border: none; background: none; cursor: pointer;" onclick="window.streamlitSessionState.set('idioma', 'it'); window.streamlitSessionState.rerun();">
-                    <img src="https://flagcdn.com/it.svg" width="50" height="30" alt="Italiano">
-                    <p>Italiano</p>
-                </button>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Botões de bandeira usando Streamlit
+    if st.button("Português"):
+        st.session_state.idioma = "pt"
+    if st.button("English"):
+        st.session_state.idioma = "en"
+    if st.button("Italiano"):
+        st.session_state.idioma = "it"
 
 # =============================================
 # Seção 2: Definição das Variáveis do Problema
@@ -201,14 +182,17 @@ st.sidebar.header(content["adicionar_paciente"])
 
 with st.sidebar.form("paciente_form"):
     st.write("Insira os dados do paciente:")
-    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, value=0)
+    neuro = st.number_input("Neuroatividade (1-5)", min_value=1, max_value=5, value=1)  # Valor inicial corrigido para 1
     fr = st.number_input("Frequência Respiratória (0-50)", min_value=0, max_value=50, value=0)
     sat = st.number_input("Saturação de Oxigênio (0-100)", min_value=0, max_value=100, value=0)
     fc = st.number_input("Frequência Cardíaca (0-300)", min_value=0, max_value=300, value=0)
     pas = st.number_input("Pressão Arterial Sistólica (0-250)", min_value=0, max_value=250, value=0)
     pad = st.number_input("Pressão Arterial Diastólica (0-130)", min_value=0, max_value=130, value=0)
-    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=0)
+    temp = st.number_input("Temperatura Corporal (32-43)", min_value=32, max_value=43, value=32)
+    
+    # Botão de envio do formulário
     submitted = st.form_submit_button(content["adicionar_paciente"])
+    
     if submitted:
         paciente = {
             "Neuroatividade": neuro,
@@ -222,13 +206,13 @@ with st.sidebar.form("paciente_form"):
         st.session_state.pacientes.append(paciente)
         st.success("Paciente adicionado!")
         # Zerar os valores dos campos após adicionar o paciente
-        st.session_state.neuro = 0
+        st.session_state.neuro = 1  # Valor inicial corrigido para 1
         st.session_state.fr = 0
         st.session_state.sat = 0
         st.session_state.fc = 0
         st.session_state.pas = 0
         st.session_state.pad = 0
-        st.session_state.temp = 0
+        st.session_state.temp = 32
 
 # =============================================
 # Seção 6: Processamento e Exibição de Resultados
